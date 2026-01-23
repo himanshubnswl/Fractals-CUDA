@@ -4,11 +4,10 @@
 
 int main()
 {
-    constexpr float height {800.00f};
-    constexpr float width {800.00f};
+    constexpr float height {1000.00f};
+    constexpr float width {1700.00f};
     sf::RenderWindow main_window(sf::VideoMode({static_cast<unsigned int>(width),static_cast<unsigned int>(height)}), "main_window");
     sf::Vertex point{{200.0f, 200.0f}, sf::Color::Red};
-
     sf::VertexArray vertices {sf::PrimitiveType::Points, static_cast<unsigned int>(width*height)};
     int vertices_idx {0};
     for (float i = 0.0f; i < width; i++) {
@@ -18,7 +17,7 @@ int main()
         }
     }
 
-    constexpr float X_scaleMax = 0.47f;
+    constexpr float X_scaleMax = 1.27f;
     constexpr float X_scaleMin = -2.00f;
     constexpr float Y_scaleMax = 1.12f;
     constexpr float Y_scaleMin = -1.12f;
@@ -42,7 +41,7 @@ int main()
         else {
             // std::uint8_t brightness = static_cast<std::uint8_t>(255 * (static_cast<float>(iteration)/max_iteration));
             // vertices[i].color = sf::Color {brightness, brightness, 150};
-            vertices[i].color = sf::Color {iteration*100200100};
+            vertices[i].color = sf::Color {iteration*200};
         }
     }
 
@@ -51,7 +50,9 @@ int main()
             if (event->is<sf::Event::Closed>())
                 main_window.close();
         }
+
         main_window.clear();
+        if (sf::Event::MouseWheelScrolled)
         main_window.draw(vertices);
         main_window.display();
     }

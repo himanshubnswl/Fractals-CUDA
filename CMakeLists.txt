@@ -1,7 +1,14 @@
 cmake_minimum_required(VERSION 4.0)
-project(fractals)
+project(fractals LANGUAGES CXX CUDA)
 
 set(CMAKE_CXX_STANDARD 20)
+if(WIN32 OR WIN64)
+    if(CMAKE_CXX_COMPILER_ID != MSVC)
+        message(compatible MSVC needed for windows!)
+    endif()
+endif()
+
+#find_package(CUDAToolKit REQUIRED)
 
 include(FetchContent)
 FetchContent_Declare(SFML
@@ -10,5 +17,5 @@ FetchContent_Declare(SFML
 )
 FetchContent_MakeAvailable(SFML)
 
-add_executable(fractals main.cpp)
-target_link_libraries(fractals PUBLIC SFML::Graphics SFML::Audio)
+add_executable(fractals main.cpp mandelbrot.cu)
+target_link_libraries(fractals PUBLIC SFML::Graphics SFML::Audio CUDA)
