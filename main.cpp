@@ -18,10 +18,10 @@ struct c_planePos mapToComplexPlane(double xc_max, double xc_min, double yc_max,
 }
 
 void getNewRange(double &xc_max, double &xc_min, double &yc_max, double &yc_min, double zoom, struct c_planePos point) {
-    xc_max = (xc_max - point.x) / zoom;
-    xc_min = (xc_min - point.x) / zoom;
-    yc_max = (yc_max - point.y) / zoom;
-    yc_min = (yc_min - point.y) / zoom;
+    xc_max = point.x + (xc_max - point.x) / zoom;
+    xc_min = point.x + (xc_min - point.x) / zoom;
+    yc_max = point.y + (yc_max - point.y) / zoom;
+    yc_min = point.y + (yc_min - point.y) / zoom;
 }
 
 int main() {
