@@ -26,8 +26,6 @@ void getNewRange(double &xc_max, double &xc_min, double &yc_max, double &yc_min,
 
 int main() {
     int count;
-    cudaGetDeviceCount(&count);
-    std::cout << count;
     constexpr int screen_width = 1600;
     constexpr int screen_height = 800;
     sf::RenderWindow window{sf::VideoMode({screen_width, screen_height}), "mandelbrot"};
@@ -35,7 +33,7 @@ int main() {
     sf::Vertex *vertices_host = (sf::Vertex *) malloc(screen_width * screen_height * sizeof(sf::Vertex));
     cudaMalloc((void **) &vertices_device, (screen_width * screen_height * sizeof(sf::Vertex)));
 
-    constexpr int iterations = 1000;
+    constexpr int iterations = 300;
     double x_re_max = 0.47;
     double x_re_min = -2.00;
     double y_im_max = 1.12;
@@ -78,6 +76,9 @@ int main() {
 
                 cudaMemcpy((void *) vertices_host, (void *) vertices_device,
                            screen_width * screen_height * sizeof(sf::Vertex), cudaMemcpyDeviceToHost);
+            }
+            else if (event->is<sf::Event::MouseLeft>()) {
+
             }
         }
         window.clear();

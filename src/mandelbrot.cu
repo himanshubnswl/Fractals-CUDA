@@ -1,8 +1,7 @@
 //
 // Created by lhbdawn on 21-01-2026.
 //
-#include <SFML/Graphics.hpp>
-#include <iostream>
+#include "draw_mandelbrot.hpp"
 
 template<typename T>
 __global__ void draw_mandelbrot(sf::Vertex *vertices, T height, T width, int total_iterations, T x_scale_max,
