@@ -4,6 +4,20 @@
 #include "draw_mandelbrot.hpp"
 
 template<typename T>
+__global__ void cal_color(sf::Vertex *vertices, T height, T width, int total_iterations,
+                          Mandelbrot::complexBoundary boundary) {
+    T px = blockIdx.x * blockDim.x + threadIdx.x;
+    T py = blockIdx.y * blockDim.y + threadIdx.y;
+    if (px > width || py > height) {
+        return;
+    }
+
+    unsigned int idx = py * width * px;
+    vertices[idx].position.x = px;
+    vertices[idx].position.y = py;
+
+}
+
 __global__ void draw_mandelbrot(sf::Vertex *vertices, T height, T width, int total_iterations, T x_scale_max,
                                 T x_scale_min, T y_scale_max, T y_scale_min, T x_offset, T y_offset, T zoom_level) {
     T px = blockIdx.x * blockDim.x + threadIdx.x;
@@ -21,8 +35,8 @@ __global__ void draw_mandelbrot(sf::Vertex *vertices, T height, T width, int tot
     // T centre_c_y = y_scale_min + (y_offset/height) * range_y;
     // x_scale_min = centre_c_x + range_x/2;
     // y_scale_min = centre_c_y + range_y/2;
-    T c_real = x_scale_min + (px/width) * (x_scale_max - x_scale_min);
-    T c_imag = y_scale_min + (py/height) * (y_scale_max - y_scale_min);
+    T c_real = x_scale_min + (px / width) * (x_scale_max - x_scale_min);
+    T c_imag = y_scale_min + (py / height) * (y_scale_max - y_scale_min);
     T x = 0.0;
     T y = 0.0;
     unsigned int current_iteration = 0;
@@ -43,7 +57,8 @@ __global__ void draw_mandelbrot(sf::Vertex *vertices, T height, T width, int tot
 }
 
 void launch_mandelbrot(sf::Vertex *vertices, int width, int height, int total_iterations, double x_scale_max,
-                       double x_scale_min, double y_scale_max, double y_scale_min, double x_offset, double y_offset, double zoom_level) {
+                       double x_scale_min, double y_scale_max, double y_scale_min, double x_offset, double y_offset,
+                       double zoom_level) {
     dim3 blockSize(32, 32);
     dim3 gridSize((width + blockSize.x - 1) / blockSize.x,
                   (height + blockSize.y - 1) / blockSize.y);
