@@ -4,7 +4,7 @@
 #include "draw_mandelbrot.hpp"
 
 template<typename T>
-__global__ void cal_color(sf::Vertex const *vertices, const T height, const T width, const int total_iterations,
+__global__ void cal_color(sf::Vertex* const vertices, const T height, const T width, const int total_iterations,
                           const Mandelbrot::complexBoundary boundary) {
     T px = blockIdx.x * blockDim.x + threadIdx.x;
     T py = blockIdx.y * blockDim.y + threadIdx.y;

@@ -25,9 +25,9 @@ sf::Color Mandelbrot::HSL::HSLtoRGB() {
         else { arg2 = ( L + S ) - ( S * L ); }
         arg1 = 2 * L - arg2;
 
-        sf::Uint8 r =( 255 * HSL::HuetoRGB( arg1, arg2, (H + 1.0/3.0 ) ) );
-        sf::Uint8 g =( 255 * HSL::HuetoRGB( arg1, arg2, H ) );
-        sf::Uint8 b =( 255 * HSL::HuetoRGB( arg1, arg2, (H - 1.0/3.0 ) ) );
+        std::uint8_t r =( 255 * HSL::HuetoRGB( arg1, arg2, (H + 1.0/3.0 ) ) );
+        std::uint8_t g =( 255 * HSL::HuetoRGB( arg1, arg2, H ) );
+        std::uint8_t b =( 255 * HSL::HuetoRGB( arg1, arg2, (H - 1.0/3.0 ) ) );
         sf::Color C(r,g,b);
         return C;
     }
