@@ -17,7 +17,7 @@ __global__ void cal_color(sf::Vertex *vertices, T height, T width, int total_ite
     vertices[idx].position.y = py;
 
 }
-
+template<typename T>
 __global__ void draw_mandelbrot(sf::Vertex *vertices, T height, T width, int total_iterations, T x_scale_max,
                                 T x_scale_min, T y_scale_max, T y_scale_min, T x_offset, T y_offset, T zoom_level) {
     T px = blockIdx.x * blockDim.x + threadIdx.x;
