@@ -4,8 +4,8 @@
 #include "draw_mandelbrot.hpp"
 
 template<typename T>
-__global__ void cal_color(sf::Vertex *vertices, T height, T width, int total_iterations,
-                          Mandelbrot::complexBoundary boundary) {
+__global__ void cal_color(sf::Vertex const *vertices, const T height, const T width, const int total_iterations,
+                          const Mandelbrot::complexBoundary boundary) {
     T px = blockIdx.x * blockDim.x + threadIdx.x;
     T py = blockIdx.y * blockDim.y + threadIdx.y;
     if (px > width || py > height) {
@@ -15,44 +15,29 @@ __global__ void cal_color(sf::Vertex *vertices, T height, T width, int total_ite
     unsigned int idx = py * width * px;
     vertices[idx].position.x = px;
     vertices[idx].position.y = py;
-
-}
-template<typename T>
-__global__ void draw_mandelbrot(sf::Vertex *vertices, T height, T width, int total_iterations, T x_scale_max,
-                                T x_scale_min, T y_scale_max, T y_scale_min, T x_offset, T y_offset, T zoom_level) {
-    T px = blockIdx.x * blockDim.x + threadIdx.x;
-    T py = blockIdx.y * blockDim.y + threadIdx.y;
-    if (px > width || py > height) {
-        return;
-    }
-    unsigned int idx = (py * width + px);
-
-    vertices[idx].position.x = px;
-    vertices[idx].position.y = py;
-    // T range_x = (x_scale_max - x_scale_min)/zoom_level;
-    // T range_y = (y_scale_max - y_scale_min)/zoom_level;
-    // T centre_c_x = x_scale_min + (x_offset/width) * range_x;
-    // T centre_c_y = y_scale_min + (y_offset/height) * range_y;
-    // x_scale_min = centre_c_x + range_x/2;
-    // y_scale_min = centre_c_y + range_y/2;
-    T c_real = x_scale_min + (px / width) * (x_scale_max - x_scale_min);
-    T c_imag = y_scale_min + (py / height) * (y_scale_max - y_scale_min);
-    T x = 0.0;
-    T y = 0.0;
+    const Mandelbrot::complexPoint c_const{
+        .x = boundary.x_min + (px / width) * boundary.x_diff,
+        .y = boundary.y_min + (py / height) * boundary.y_diff
+    };
+    Mandelbrot::complexPoint xy{
+        .x = 0.0,
+        .y = 0.0
+    };
     unsigned int current_iteration = 0;
-    T c_magnitude = x * x + y * y;
+    T c_magnitude = xy.x * xy.x + xy.y * xy.y;
     T x_temp = 0;
     while (c_magnitude < 4 && current_iteration != total_iterations) {
-        x_temp = x * x - y * y + c_real;
-        y = 2 * x * y + c_imag;
-        x = x_temp;
-        c_magnitude = x * x + y * y;
+        x_temp = xy.x * xy.x - xy.y * xy.y + c_const.x;
+        xy.y = 2 * xy.x * xy.y + c_const.y;
+        xy.x = x_temp;
+        c_magnitude = xy.x * xy.x + xy.y * xy.y;
         current_iteration++;
     }
+
     if (current_iteration == total_iterations) {
         vertices[idx].color = sf::Color::Black;
     } else {
-        vertices[idx].color = sf::Color::Blue;
+        vertices[idx].color = sf::;
     }
 }
 

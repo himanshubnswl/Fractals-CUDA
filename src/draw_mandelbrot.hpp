@@ -1,6 +1,9 @@
 #pragma once
 #include <cuda_runtime.h>
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <cmath>
+#include <algorithm>
 
 namespace Mandelbrot {
     struct complexPoint {
@@ -16,10 +19,15 @@ namespace Mandelbrot {
         double y_min;
         double y_diff;
     };
+    struct HSL {
+        double hue;
+        double saturation;
+        double luminance;
 
-    using complexBoundary = struct complexBoundary;
-    using complexPoint = struct complexPoint;
-    using pixelLos = struct complexPoint;
+        double HuetoRGB(double arg1, double arg2, double H);
+        sf::Color HSLtoRGB (HSL arg);
+    };
+    using pixelLos = complexPoint;
 
     void set_diff(complexBoundary& point);
     complexPoint map_pxl_to_complex(pixelLos pos, int height, int width, complexBoundary boundary);
