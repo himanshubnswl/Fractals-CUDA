@@ -3,7 +3,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "mandelbrot.cuh"
-#include "draw_mandelbrot.hpp"
+#include "draw_mandelbrot.cuh"
 
 int main() {
     constexpr int height = 800;

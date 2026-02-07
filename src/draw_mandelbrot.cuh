@@ -2,9 +2,8 @@
 #include <cuda_runtime.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Color.hpp>
-#include <cmath>
-#include <algorithm>
 #include "mandelbrot.cuh"
+#include <cmath>
 
 namespace Mandelbrot {
     struct complexPoint {
@@ -29,9 +28,9 @@ namespace Mandelbrot {
         double saturation;
         double luminance;
 
-        double HuetoRGB(double arg1, double arg2, double H);
+        __host__ __device__ double HuetoRGB(double arg1, double arg2, double H);
 
-        sf::Color HSLtoRGB();
+        __host__ __device__ sf::Color HSLtoRGB();
     };
 
     using pixelLos = complexPoint;

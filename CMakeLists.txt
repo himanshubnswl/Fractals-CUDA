@@ -19,5 +19,5 @@ FetchContent_Declare(SFML
 )
 FetchContent_MakeAvailable(SFML)
 
-add_executable(fractals src/main.cpp src/mandelbrot.cu)
+add_executable(fractals src/main.cpp src/draw_mandelbrot.cu src/mandelbrot.cu)
 target_link_libraries(fractals PUBLIC SFML::Graphics SFML::Audio CUDA::cudart)

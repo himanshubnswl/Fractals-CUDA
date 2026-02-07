@@ -1,6 +1,6 @@
-#include "draw_mandelbrot.hpp"
+#include "draw_mandelbrot.cuh"
 
-double Mandelbrot::HSL::HuetoRGB(double arg1, double arg2, double H) {
+__host__ __device__ double Mandelbrot::HSL::HuetoRGB(double arg1, double arg2, double H) {
     if ( H < 0 ) H += 1;
     if ( H > 1 ) H -= 1;
     if ( ( 6 * H ) < 1 ) { return (arg1 + ( arg2 - arg1 ) * 6 * H); }
@@ -8,7 +8,7 @@ double Mandelbrot::HSL::HuetoRGB(double arg1, double arg2, double H) {
     if ( ( 3 * H ) < 2 ) { return ( arg1 + ( arg2 - arg1 ) * ( ( 2.0 / 3.0 ) - H ) * 6 ); }
     return arg1;
 }
-sf::Color Mandelbrot::HSL::HSLtoRGB() {
+__host__ __device__ sf::Color Mandelbrot::HSL::HSLtoRGB() {
     double H = hue/360.0;
     double S = saturation/100.0;
     double L = luminance/100.0;
