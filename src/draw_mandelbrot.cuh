@@ -28,9 +28,38 @@ namespace Mandelbrot {
         double saturation;
         double luminance;
 
-        __host__ __device__ double HuetoRGB(double arg1, double arg2, double H);
+        inline __device__ double HuetoRGB(double arg1, double arg2, double H) {
+            if ( H < 0 ) H += 1;
+            if ( H > 1 ) H -= 1;
+            if ( ( 6 * H ) < 1 ) { return (arg1 + ( arg2 - arg1 ) * 6 * H); }
+            if ( ( 2 * H ) < 1 ) { return arg2; }
+            if ( ( 3 * H ) < 2 ) { return ( arg1 + ( arg2 - arg1 ) * ( ( 2.0 / 3.0 ) - H ) * 6 ); }
+            return arg1;
+        }
+        inline __device__ void HSLtoRGB(sf::Color& target) {
+            double H = hue/360.0;
+            double S = saturation/100.0;
+            double L = luminance/100.0;
+            constexpr double D_EPSILON = 0.00000000000001;
 
-        __host__ __device__ sf::Color HSLtoRGB();
+
+            if (S <= D_EPSILON)
+            {
+                target.r = target.g = target.b = 255;
+            }
+            else {
+                double arg1, arg2;
+                if ( L < 0.5 ) { arg2 = L * ( 1 + S ); }
+                else { arg2 = ( L + S ) - ( S * L ); }
+                arg1 = 2 * L - arg2;
+
+                target.r = ( 255 * HSL::HuetoRGB( arg1, arg2, (H + 1.0/3.0 ) ) );
+                target.g = ( 255 * HSL::HuetoRGB( arg1, arg2, H ) );
+                target.b = ( 255 * HSL::HuetoRGB( arg1, arg2, (H - 1.0/3.0 ) ) );
+                target.a = 255;
+            }
+        }
+
     };
 
     using pixelLos = complexPoint;

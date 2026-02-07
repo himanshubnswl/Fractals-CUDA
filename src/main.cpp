@@ -12,7 +12,12 @@ int main() {
     // Mandelbrot::complexBoundary boundary {0.85, -2.0, 0.8, -0.8};
     sf::RenderWindow window{sf::VideoMode{sf::Vector2u{width, height}}, "mandelbrot"};
     sf::Vertex* vertices = Mandelbrot::render_mandelbrot(height, width, boundary);
+    for (int i = 0; i < height * width; i++) {
+        std::cout << "\nx is: " << vertices[i].position.x;
+        std::cout << "\ny is: " << vertices[i].position.y;
+    }
     while (window.isOpen()) {
+        // window.clear(sf::Color::Black);
         while (const std::optional event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
                 window.close();
@@ -29,7 +34,7 @@ int main() {
                 Mandelbrot::render_mandelbrot(height, width, boundary);
             }
         }
-        window.draw(vertices, (height * width * sizeof(sf::Vertex)), sf::PrimitiveType::Points);
+        window.draw(vertices, (height * width), sf::PrimitiveType::Points);
         window.display();
     }
 }

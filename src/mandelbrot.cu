@@ -17,8 +17,8 @@ __global__ void cal_color(sf::Vertex *const vertices, const T height, const T wi
     vertices[idx].position.x = px;
     vertices[idx].position.y = py;
     const Mandelbrot::complexPoint c_const{
-        .x = boundary.x_min + (px / width) * boundary.x_diff,
-        .y = boundary.y_min + (py / height) * boundary.y_diff
+        .x = boundary.x_min + (static_cast<double>(px) / width) * boundary.x_diff,
+        .y = boundary.y_min + (static_cast<double>(py) / height) * boundary.y_diff
     };
     Mandelbrot::complexPoint xy{
         .x = 0.0,
@@ -40,11 +40,12 @@ __global__ void cal_color(sf::Vertex *const vertices, const T height, const T wi
     if (current_iteration == total_iterations) {
         vertices[idx].color = sf::Color::Black;
     } else {
-        Mandelbrot::HSL color_hsl{};
-        color_hsl.hue = fmin(360.00, (log(static_cast<double>(current_iteration) + 1.00 - log(log(c_magnitude)) / LN_2) * 75.00));
-        color_hsl.saturation = fmod(SAT, 100.00);
-        color_hsl.luminance = fmod(LUM, 100.00);
-        vertices[idx].color = color_hsl.HSLtoRGB();
+        // Mandelbrot::HSL color_hsl{};
+        // color_hsl.hue = fmin(360.00, (log(static_cast<double>(current_iteration) + 1.00 - log(log(c_magnitude)) / LN_2) * 75.00));
+        // color_hsl.saturation = fmod(SAT, 100.00);
+        // color_hsl.luminance = fmod(LUM, 100.00);
+        // color_hsl.HSLtoRGB(vertices[idx].color);
+        vertices[idx].color = sf::Color::Blue;
     }
 }
 
@@ -52,6 +53,6 @@ void launch_mandelbrot_kernel(sf::Vertex *const vertices, const int height, cons
                               const Mandelbrot::complexBoundary boundary) {
     dim3 blockSize{32, 32};
     dim3 gridSize{(width + blockSize.x - 1) / blockSize.x, (height + blockSize.y - 1) / blockSize.y};
-    cal_color<<<gridSize,blockSize>>>(vertices, height, width, total_iterations, boundary);
+    cal_color<double><<<gridSize,blockSize>>>(vertices, height, width, total_iterations, boundary);
     cudaDeviceSynchronize();
 }
