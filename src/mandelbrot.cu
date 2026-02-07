@@ -2,6 +2,7 @@
 // Created by lhbdawn on 21-01-2026.
 //
 #include "draw_mandelbrot.hpp"
+#include "mandelbrot.cuh"
 
 template<typename T>
 __global__ void cal_color(sf::Vertex *const vertices, const T height, const T width, const int total_iterations,
@@ -47,3 +48,10 @@ __global__ void cal_color(sf::Vertex *const vertices, const T height, const T wi
     }
 }
 
+void launch_mandelbrot_kernel(sf::Vertex *const vertices, const int height, const int width, const int total_iterations,
+                              const Mandelbrot::complexBoundary boundary) {
+    dim3 blockSize{32, 32};
+    dim3 gridSize{(width + blockSize.x - 1) / blockSize.x, (height + blockSize.y - 1) / blockSize.y};
+    cal_color<<<gridSize,blockSize>>>(vertices, height, width, total_iterations, boundary);
+    cudaDeviceSynchronize();
+}

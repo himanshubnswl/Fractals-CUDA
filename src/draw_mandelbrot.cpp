@@ -13,7 +13,7 @@ sf::Color Mandelbrot::HSL::HSLtoRGB() {
     double S = saturation/100.0;
     double L = luminance/100.0;
     constexpr double D_EPSILON = 0.00000000000001;
-    double arg1, arg2;
+
 
     if (S <= D_EPSILON)
     {
@@ -21,6 +21,7 @@ sf::Color Mandelbrot::HSL::HSLtoRGB() {
         return C;
     }
     else {
+        double arg1, arg2;
         if ( L < 0.5 ) { arg2 = L * ( 1 + S ); }
         else { arg2 = ( L + S ) - ( S * L ); }
         arg1 = 2 * L - arg2;
@@ -63,7 +64,7 @@ namespace Mandelbrot {
         if (vertex_arr_device == nullptr) {
             cudaMalloc((void**)vertex_arr_device, (width * height * sizeof(sf::Vertex)));
         }
-        //kernel function call
+        launch_mandelbrot_kernel(vertex_arr_device, height, width, 1000, boundary);
         cudaMemcpy(vertex_arr_host, vertex_arr_device, (width * height * sizeof(sf::Vertex)), cudaMemcpyDeviceToHost);
         return vertex_arr_host;
     }
