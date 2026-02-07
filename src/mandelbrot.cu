@@ -4,7 +4,7 @@
 #include "draw_mandelbrot.hpp"
 
 template<typename T>
-__global__ void cal_color(sf::Vertex* const vertices, const T height, const T width, const int total_iterations,
+__global__ void cal_color(sf::Vertex *const vertices, const T height, const T width, const int total_iterations,
                           const Mandelbrot::complexBoundary boundary) {
     T px = blockIdx.x * blockDim.x + threadIdx.x;
     T py = blockIdx.y * blockDim.y + threadIdx.y;
@@ -33,23 +33,17 @@ __global__ void cal_color(sf::Vertex* const vertices, const T height, const T wi
         c_magnitude = xy.x * xy.x + xy.y * xy.y;
         current_iteration++;
     }
-
+    constexpr double LN_2 = 0.30102999;
+    constexpr double SAT = 50;
+    constexpr double LUM = 30;
     if (current_iteration == total_iterations) {
         vertices[idx].color = sf::Color::Black;
     } else {
-        vertices[idx].color = sf::;
+        Mandelbrot::HSL color_hsl{};
+        color_hsl.hue = min(360, log(current_iteration + 1 - log(log(c_magnitude)) / LN_2) * 75) % 360;
+        color_hsl.saturation = fmod(SAT, 100);
+        color_hsl.luminance = fmod(LUM, 100);
+        vertices[idx].color = color_hsl.HSLtoRGB();
     }
 }
 
-void launch_mandelbrot(sf::Vertex *vertices, int width, int height, int total_iterations, double x_scale_max,
-                       double x_scale_min, double y_scale_max, double y_scale_min, double x_offset, double y_offset,
-                       double zoom_level) {
-    dim3 blockSize(32, 32);
-    dim3 gridSize((width + blockSize.x - 1) / blockSize.x,
-                  (height + blockSize.y - 1) / blockSize.y);
-
-    draw_mandelbrot<double><<<gridSize, blockSize>>>(
-        vertices, (double) height, (double) width, total_iterations, x_scale_max, x_scale_min, y_scale_max,
-        y_scale_min, x_offset, y_offset, zoom_level);
-    cudaDeviceSynchronize(); // Ensure it finishes before returning to main.cpp
-}

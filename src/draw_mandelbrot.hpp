@@ -25,7 +25,7 @@ namespace Mandelbrot {
         double luminance;
 
         double HuetoRGB(double arg1, double arg2, double H);
-        sf::Color HSLtoRGB (HSL arg);
+        sf::Color HSLtoRGB();
     };
     using pixelLos = complexPoint;
 
