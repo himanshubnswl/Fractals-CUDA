@@ -8,14 +8,14 @@
 int main() {
     constexpr int height = 800;
     constexpr int width = 1500;
-    Mandelbrot::complexBoundary boundary {.x_max = 0.85, .x_min = -2.0, .y_max = 0.8, .y_min = -0.8};
+    Mandelbrot::complexBoundary boundary {.x_max = 0.85, .x_min = -2.0, .y_max = 1.00, .y_min = -1.00};
     // Mandelbrot::complexBoundary boundary {0.85, -2.0, 0.8, -0.8};
     sf::RenderWindow window{sf::VideoMode{sf::Vector2u{width, height}}, "mandelbrot"};
     sf::Vertex* vertices = Mandelbrot::render_mandelbrot(height, width, boundary);
-    for (int i = 0; i < height * width; i++) {
-        std::cout << "\nx is: " << vertices[i].position.x;
-        std::cout << "\ny is: " << vertices[i].position.y;
-    }
+    // for (int i = 0; i < height * width; i++) {
+    //     std::cout << "\nx is: " << vertices[i].position.x;
+    //     std::cout << "\ny is: " << vertices[i].position.y;
+    // }
     while (window.isOpen()) {
         // window.clear(sf::Color::Black);
         while (const std::optional event = window.pollEvent()) {

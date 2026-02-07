@@ -1,4 +1,5 @@
 #include "draw_mandelbrot.cuh"
+#include <iostream>
 
 // __device__ double Mandelbrot::HSL::HuetoRGB(double arg1, double arg2, double H) {
 //     if ( H < 0 ) H += 1;
@@ -65,6 +66,10 @@ namespace Mandelbrot {
         }
         launch_mandelbrot_kernel(vertex_arr_device, height, width, 1000, boundary);
         cudaMemcpy(vertex_arr_host, vertex_arr_device, (width * height * sizeof(sf::Vertex)), cudaMemcpyDeviceToHost);
+        // for (int i = 0; i < height * width; i++) {
+        //     std::cout << "\nx is: " << vertex_arr_host[i].position.x;
+        //     std::cout << "\ny is: " << vertex_arr_host[i].position.y;
+        // }
         return vertex_arr_host;
     }
 }

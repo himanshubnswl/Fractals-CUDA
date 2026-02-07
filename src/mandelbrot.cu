@@ -13,7 +13,7 @@ __global__ void cal_color(sf::Vertex *const vertices, const T height, const T wi
         return;
     }
 
-    unsigned int idx = py * width * px;
+    unsigned int idx = py * width + px;
     vertices[idx].position.x = px;
     vertices[idx].position.y = py;
     const Mandelbrot::complexPoint c_const{
@@ -40,12 +40,12 @@ __global__ void cal_color(sf::Vertex *const vertices, const T height, const T wi
     if (current_iteration == total_iterations) {
         vertices[idx].color = sf::Color::Black;
     } else {
-        // Mandelbrot::HSL color_hsl{};
-        // color_hsl.hue = fmin(360.00, (log(static_cast<double>(current_iteration) + 1.00 - log(log(c_magnitude)) / LN_2) * 75.00));
-        // color_hsl.saturation = fmod(SAT, 100.00);
-        // color_hsl.luminance = fmod(LUM, 100.00);
-        // color_hsl.HSLtoRGB(vertices[idx].color);
-        vertices[idx].color = sf::Color::Blue;
+        Mandelbrot::HSL color_hsl{};
+        color_hsl.hue = fmin(360.00, (log(static_cast<double>(current_iteration) + 1.00 - log(log(c_magnitude)) / LN_2) * 75.00));
+        color_hsl.saturation = fmod(SAT, 100.00);
+        color_hsl.luminance = fmod(LUM, 100.00);
+        color_hsl.HSLtoRGB(vertices[idx].color);
+        // vertices[idx].color = sf::Color::Blue;
     }
 }
 
