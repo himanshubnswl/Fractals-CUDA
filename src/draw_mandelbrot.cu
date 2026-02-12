@@ -54,7 +54,7 @@ namespace Mandelbrot {
         boundary.y_min = mouse_pos.y + (boundary.y_min - mouse_pos.y) / zoom;
     }
 
-    sf::Vertex* render_mandelbrot(size_t height, size_t width, complexBoundary boundary) {
+    sf::Vertex* render_mandelbrot(int height, int width, complexBoundary boundary, int iterations) {
         static sf::Vertex* vertex_arr_host = nullptr;
         set_diff(boundary);
         if (vertex_arr_host == nullptr) {
@@ -64,12 +64,21 @@ namespace Mandelbrot {
         if (vertex_arr_device == nullptr) {
             cudaMalloc((void**)&vertex_arr_device, (width * height * sizeof(sf::Vertex)));
         }
-        launch_mandelbrot_kernel(vertex_arr_device, height, width, 1000, boundary);
+        launch_mandelbrot_kernel(vertex_arr_device, height, width, iterations, boundary);
         cudaMemcpy(vertex_arr_host, vertex_arr_device, (width * height * sizeof(sf::Vertex)), cudaMemcpyDeviceToHost);
         // for (int i = 0; i < height * width; i++) {
         //     std::cout << "\nx is: " << vertex_arr_host[i].position.x;
         //     std::cout << "\ny is: " << vertex_arr_host[i].position.y;
         // }
         return vertex_arr_host;
+    }
+
+    __host__ void set_complex_boundary_drag(complexBoundary& boundary,int height, int width, sf::Vector2<double> delta) {
+        delta.x = (delta.x/width) * boundary.x_diff;
+        delta.y = (delta.y/height) * boundary.y_diff;
+        boundary.x_max += delta.x;
+        boundary.x_min += delta.x;
+        boundary.y_max += delta.y;
+        boundary.y_min += delta.y;
     }
 }

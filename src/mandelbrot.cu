@@ -35,14 +35,15 @@ __global__ void cal_color(sf::Vertex *const vertices, const T height, const T wi
         current_iteration++;
     }
     constexpr double LN_2 = 0.30102999;
+    constexpr double HUE = 200;
     constexpr double SAT = 50.00;
     constexpr double LUM = 30.00;
     if (current_iteration == total_iterations) {
         vertices[idx].color = sf::Color::Black;
     } else {
         Mandelbrot::HSL color_hsl{};
-        color_hsl.hue = fmin(360.00, (log(static_cast<double>(current_iteration) + 1.00 - log(log(c_magnitude)) / LN_2) * 75.00));
-        color_hsl.saturation = fmod(SAT, 100.00);
+        color_hsl.saturation = fmin(360.00, (log(static_cast<double>(current_iteration) + 1.00 - log(log(c_magnitude)) / LN_2) * 75.00));
+        color_hsl.hue = fmod(HUE, 360.00);
         color_hsl.luminance = fmod(LUM, 100.00);
         color_hsl.HSLtoRGB(vertices[idx].color);
         // vertices[idx].color = sf::Color::Blue;
