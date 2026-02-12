@@ -25,8 +25,8 @@ int main() {
         static sf::Vector2i oldpos{};
         static sf::Vector2i newpos{};
         // window.clear(sf::Color::Black);
+        static bool redraw{false};
         while (const std::optional event = window.pollEvent()) {
-            static bool redraw{false};
             if (event->is<sf::Event::Closed>()) {
                 window.close();
             } else if (const auto *scroll = event->getIf<sf::Event::MouseWheelScrolled>()) {
@@ -57,10 +57,11 @@ int main() {
                 }
             } else if (event->is<sf::Event::MouseButtonReleased>()) {
                 mouse_button_pressed = false;
-            } else if (redraw) {
-                Mandelbrot::render_mandelbrot(height, width, boundary, iterations);
-                redraw = false;
             }
+        }
+        if (redraw) {
+            Mandelbrot::render_mandelbrot(height, width, boundary, iterations);
+            redraw = false;
         }
         window.draw(vertices, (height * width), sf::PrimitiveType::Points);
         window.display();
