@@ -1,12 +1,7 @@
-#include <cuda_runtime.h>
-#include <iostream>
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
-#include "mandelbrot.cuh"
 #include "draw_mandelbrot.cuh"
-#include "../cmake-build-debug-visual-studio/_deps/sfml-src/src/SFML/Window/InputImpl.hpp"
-#include <chrono>
-#include <thread>
+
 
 int main() {
     constexpr int height = 800;

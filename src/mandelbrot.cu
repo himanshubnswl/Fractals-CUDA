@@ -43,7 +43,7 @@ __global__ void cal_color(sf::Vertex *const vertices, const T height, const T wi
     } else {
         Mandelbrot::HSL color_hsl{};
         color_hsl.saturation = fmin(
-            360.00, (log(static_cast<double>(current_iteration) + 1.00 - log(log(c_magnitude)) / LN_2) * 75.00));
+            100.00, (log(static_cast<double>(current_iteration) + 1.00 - log(log(c_magnitude)) / LN_2) * 75.00));
         color_hsl.hue = fmod(HUE, 360.00);
         color_hsl.luminance = fmod(LUM, 100.00);
         color_hsl.HSLtoRGB(vertices[idx].color);
@@ -81,7 +81,7 @@ __global__ void cal_color_julia(sf::Vertex *const vertices, const double height,
     } else {
         Mandelbrot::HSL color_hsl{};
         color_hsl.saturation = fmin(
-            360.00, (log(static_cast<double>(current_iteration) + 1.00 - log(log(magnitude)) / LN_2) * 75.00));
+            100.00, (log(static_cast<double>(current_iteration) + 1.00 - log(log(magnitude)) / LN_2) * 75.00));
         color_hsl.hue = fmod(HUE, 360.00);
         color_hsl.luminance = fmod(LUM, 100.00);
         color_hsl.HSLtoRGB(vertices[idx].color);
