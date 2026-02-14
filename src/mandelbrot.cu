@@ -51,13 +51,16 @@ __global__ void cal_color(sf::Vertex *const vertices, const T height, const T wi
     }
 }
 
-__global__ void cal_color_julia(sf::Vertex *const vertices, const double height, const double widht,
-                                const int max_iterations, const Mandelbrot::complexPoint constant_p) {
-    double px = blockIdx.x * blockDim.x + threadIdx.x;
-    double py = blockIdx.y * blockDim.y + threadIdx.y;
+__global__ void cal_color_julia(sf::Vertex *const vertices, const double height, const double width,
+                                const int max_iterations, const Mandelbrot::complexBoundary boundary,
+                                const Mandelbrot::complexPoint constant_p) {
+    unsigned int px = blockIdx.x * blockDim.x + threadIdx.x;
+    unsigned int py = blockIdx.y * blockDim.y + threadIdx.y;
 
-    unsigned int idx = static_cast<int>(py * widht + px);
-    Mandelbrot::complexPoint xy{.x = px, .y = py};
+    unsigned int idx = static_cast<int>(py * width + px);
+    Mandelbrot::complexPoint xy{
+        .x = boundary.x_min + (px / width) * boundary.x_diff, .y = boundary.y_min + (py / height) * boundary.y_diff
+    };
     double magnitude = xy.x * xy.x + xy.y * xy.y;
     double x_temp = 0;
     unsigned int current_iteration = 0;
@@ -65,7 +68,7 @@ __global__ void cal_color_julia(sf::Vertex *const vertices, const double height,
         x_temp = xy.x * xy.x - xy.y * xy.y + constant_p.x;
         xy.y = 2 * xy.x * xy.y + constant_p.y;
         xy.x = x_temp;
-        magnitude = xy.x * xy.x + xy.y + xy.y;
+        magnitude = xy.x * xy.x + xy.y * xy.y;
         current_iteration++;
     }
 
@@ -86,10 +89,14 @@ __global__ void cal_color_julia(sf::Vertex *const vertices, const double height,
     }
 }
 
-void launch_julia_kernel(sf::Vertex *const vertices, const int height, const int width,const int max_iterations, const Mandelbrot::complexPoint constant_p) {
+void launch_julia_kernel(sf::Vertex *const vertices, const int height, const int width, const int max_iterations,
+                         const Mandelbrot::complexBoundary boundary,
+                         const Mandelbrot::complexPoint constant_p
+) {
     dim3 blockSize{32, 32};
     dim3 gridSize{(width + blockSize.x - 1) / blockSize.x, (height + blockSize.y - 1) / blockSize.y};
-    cal_color_julia<<<gridSize,blockSize>>>(vertices, static_cast<double>(height), static_cast<double>(width),max_iterations, constant_p);
+    cal_color_julia<<<gridSize,blockSize>>>(vertices, static_cast<double>(height), static_cast<double>(width),
+                                            max_iterations,boundary, constant_p);
     cudaDeviceSynchronize();
 }
 

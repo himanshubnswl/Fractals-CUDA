@@ -51,7 +51,7 @@ namespace Mandelbrot {
         if (vertex_arr_device == nullptr) {
             cudaMalloc((void**)&vertex_arr_device, (width * height * sizeof(sf::Vertex)));
         }
-        launch_julia_kernel(vertex_arr_device, height, width, max_iterations, constant_p);
+        launch_julia_kernel(vertex_arr_device, height, width, max_iterations,boundary, constant_p);
         cudaMemcpy(vertex_arr_host, vertex_arr_device, (width * height * sizeof(sf::Vertex)), cudaMemcpyDeviceToHost);
         // for (int i = 0; i < height * width; i++) {
         //     std::cout << "\nx is: " << vertex_arr_host[i].position.x;
