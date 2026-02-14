@@ -11,7 +11,7 @@
 int main() {
     constexpr int height = 800;
     constexpr int width = 1500;
-    constexpr int iterations = 100;
+    constexpr int iterations = 1000;
     Mandelbrot::complexBoundary boundary{.x_max = 0.85, .x_min = -2.0, .y_max = 1.00, .y_min = -1.00};
     // Mandelbrot::complexBoundary boundary {0.85, -2.0, 0.8, -0.8};
     sf::RenderWindow window{sf::VideoMode{sf::Vector2u{width, height}}, "mandelbrot"};
@@ -26,6 +26,7 @@ int main() {
         static sf::Vector2i newpos{};
         // window.clear(sf::Color::Black);
         static bool redraw{false};
+        //event loop
         while (const std::optional event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
                 window.close();
@@ -36,15 +37,18 @@ int main() {
                 } else {
                     zoom = 1 / 1.2;
                 }
-                Mandelbrot::pixelLos mouse_pos{
-                    static_cast<double>(scroll->position.x), static_cast<double>(scroll->position.y)
-                };
-                auto mouse_com = Mandelbrot::map_pxl_to_complex(mouse_pos, height, width, boundary);
+                auto mouse_com = Mandelbrot::map_pxl_to_complex(scroll->position, height, width, boundary);
                 Mandelbrot::set_complex_boundary_zoom(boundary, mouse_com, zoom);
-                Mandelbrot::render_mandelbrot(height, width, boundary, iterations);
+                redraw = true;
             } else if (auto *mouse = event->getIf<sf::Event::MouseButtonPressed>()) {
-                mouse_button_pressed = true;
-                oldpos = mouse->position;
+                if (mouse->button == sf::Mouse::Button::Left) {
+                    mouse_button_pressed = true;
+                    oldpos = mouse->position;
+                } else if (mouse->button == sf::Mouse::Button::Right) {
+                    vertices = Mandelbrot::render_julia(height, width, boundary, 300,
+                                                        Mandelbrot::map_pxl_to_complex(
+                                                            mouse->position, height, width, boundary));
+                }
             } else if (event->is<sf::Event::MouseMoved>() && mouse_button_pressed) {
                 newpos = sf::Mouse::getPosition(window);
                 sf::Vector2<double> delta = {
