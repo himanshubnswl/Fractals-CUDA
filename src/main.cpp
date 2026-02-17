@@ -62,54 +62,9 @@ int main() {
                                                           Mandelbrot::map_pxl_to_complex(
                                                               sf::Mouse::getPosition(window_mandelbrot), height, width,
                                                               boundary_julia));
-    // for (int i = 0; i < height * width; i++) {
-    //     std::cout << "\nx is: " << vertices[i].position.x;
-    //     std::cout << "\ny is: " << vertices[i].position.y;
-    // }
+
     while (window_mandelbrot.isOpen()) {
-        // static bool mouse_button_pressed = false;
-        // static sf::Vector2i oldpos{};
-        // static sf::Vector2i newpos{};
-        // // window.clear(sf::Color::Black);
-        // static bool redraw_mandelbrot{false};
-        // //event loop
-        // while (const std::optional event = window_mandelbrot.pollEvent()) {
-        //     if (event->is<sf::Event::Closed>()) {
-        //         window_mandelbrot.close();
-        //     } else if (const auto *scroll = event->getIf<sf::Event::MouseWheelScrolled>()) {
-        //         double zoom{0};
-        //         if (scroll->delta > 0) {
-        //             zoom = 1.2;
-        //         } else {
-        //             zoom = 1 / 1.2;
-        //         }
-        //         auto mouse_com = Mandelbrot::map_pxl_to_complex(scroll->position, height, width, boundary_mandelbrot);
-        //         Mandelbrot::set_complex_boundary_zoom(boundary_mandelbrot, mouse_com, zoom);
-        //         redraw_mandelbrot = true;
-        //     } else if (auto *mouse = event->getIf<sf::Event::MouseButtonPressed>()) {
-        //         if (mouse->button == sf::Mouse::Button::Left) {
-        //             mouse_button_pressed = true;
-        //             oldpos = mouse->position;
-        //         } else if (mouse->button == sf::Mouse::Button::Right) {
-        //             vertices_mandelbrot = Mandelbrot::render_julia(height, width, boundary_mandelbrot, 300,
-        //                                                            Mandelbrot::map_pxl_to_complex(
-        //                                                                mouse->position, height, width,
-        //                                                                boundary_mandelbrot));
-        //         }
-        //     } else if (event->is<sf::Event::MouseMoved>() && mouse_button_pressed) {
-        //         newpos = sf::Mouse::getPosition(window_mandelbrot);
-        //         sf::Vector2<double> delta = {
-        //             static_cast<double>(oldpos.x - newpos.x), static_cast<double>(oldpos.y - newpos.y)
-        //         };
-        //         if (delta.x != 0 || delta.y != 0) {
-        //             Mandelbrot::set_complex_boundary_drag(boundary_mandelbrot, height, width, delta);
-        //             oldpos = newpos;
-        //             redraw_mandelbrot = true;
-        //         }
-        //     } else if (event->is<sf::Event::MouseButtonReleased>()) {
-        //         mouse_button_pressed = false;
-        //     }
-        // }
+
         bool redraw_mandelbrot = event_handler(window_mandelbrot, boundary_mandelbrot, height, width);
         bool redraw_julia = event_handler(window_julia, boundary_julia, height, width);
         if (redraw_mandelbrot) {
@@ -118,12 +73,24 @@ int main() {
         }
         if (redraw_julia) {
             Mandelbrot::render_julia(height, width, boundary_julia, iterations_julia,
-                                     Mandelbrot::map_pxl_to_complex(sf::Mouse::getPosition(window_julia), height, width,
+                                     Mandelbrot::map_pxl_to_complex(sf::Mouse::getPosition(window_mandelbrot), height, width,
                                                                     boundary_julia));
             redraw_julia = false;
         }
         window_mandelbrot.draw(vertices_mandelbrot, (height * width), sf::PrimitiveType::Points);
         window_julia.draw(vertices_julia, (height * width), sf::PrimitiveType::Points);
         window_mandelbrot.display();
+        window_julia.display();
     }
+    // while (window_julia.isOpen()) {
+    //     bool redraw_julia = event_handler(window_julia, boundary_julia, height, width);
+    //     if (redraw_julia) {
+    //         Mandelbrot::render_julia(height, width, boundary_julia, iterations_julia,
+    //                                  Mandelbrot::map_pxl_to_complex(sf::Mouse::getPosition(window_mandelbrot), height, width,
+    //                                                                 boundary_julia));
+    //         redraw_julia = false;
+    //     }
+    //     window_julia.draw(vertices_julia, (height * width), sf::PrimitiveType::Points);
+    //     window_julia.display();
+    // }
 }
