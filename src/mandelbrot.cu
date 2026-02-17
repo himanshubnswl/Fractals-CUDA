@@ -58,6 +58,10 @@ __global__ void cal_color_julia(sf::Vertex *const vertices, const double height,
     unsigned int py = blockIdx.y * blockDim.y + threadIdx.y;
 
     unsigned int idx = static_cast<int>(py * width + px);
+
+    vertices[idx].position.x = px;
+    vertices[idx].position.y = py;
+
     Mandelbrot::complexPoint xy{
         .x = boundary.x_min + (px / width) * boundary.x_diff, .y = boundary.y_min + (py / height) * boundary.y_diff
     };
