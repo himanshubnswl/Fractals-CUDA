@@ -14,7 +14,7 @@ namespace Mandelbrot {
         };
     }
 
-    void set_complex_boundary_zoom(complexBoundary& boundary, complexPoint& mouse_pos , double zoom) {
+    void set_complex_boundary_zoom(complexBoundary& boundary, complexPoint mouse_pos , double zoom) {
         set_diff(boundary);
         boundary.x_max = mouse_pos.x + (boundary.x_max - mouse_pos.x) / zoom;
         boundary.x_min = mouse_pos.x + (boundary.x_min - mouse_pos.x) / zoom;

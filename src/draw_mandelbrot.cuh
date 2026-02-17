@@ -65,7 +65,7 @@ namespace Mandelbrot {
 
     complexPoint map_pxl_to_complex(sf::Vector2i pos, int height, int width, complexBoundary boundary);
 
-    void set_complex_boundary_zoom(complexBoundary &boundary, complexPoint &mouse_pos, double zoom);
+    void set_complex_boundary_zoom(complexBoundary &boundary, complexPoint mouse_pos, double zoom);
 
     sf::Vertex *render_mandelbrot(int height, int width, complexBoundary boundary, int iterations);
 
