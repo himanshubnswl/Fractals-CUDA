@@ -19,6 +19,7 @@ namespace Mandelbrot {
         double y_min;
         double y_diff;
 
+        __host__ void set_diff();
         // complexBoundary(double x_max, double x_min, double y_max, double y_min) : x_max(x_max), x_min(x_min),
         // y_max(y_max), y_min(y_min) {}
     };
@@ -60,9 +61,6 @@ namespace Mandelbrot {
     };
 
     using pixelLos = complexPoint;
-
-    void set_diff(complexBoundary &point);
-
     complexPoint map_pxl_to_complex(sf::Vector2i pos, int height, int width, complexBoundary boundary);
 
     void set_complex_boundary_zoom(complexBoundary &boundary, complexPoint mouse_pos, double zoom);
@@ -74,4 +72,6 @@ namespace Mandelbrot {
 
     __host__ void set_complex_boundary_drag(complexBoundary &boundary, int height, int width,
                                             sf::Vector2<double> delta);
+
+    __host__ void set_boundary_to_resolution(complexBoundary& boundary, int height, int width);
 }

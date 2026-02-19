@@ -37,6 +37,10 @@ bool event_handler(sf::Window &window, Mandelbrot::complexBoundary &boundary, in
             }
         } else if (event->is<sf::Event::MouseButtonReleased>()) {
             mouse_button_pressed = false;
+        } else if (auto *resize = event->getIf<sf::Event::Resized>()) {
+            width = static_cast<int>(resize->size.x);
+            height = static_cast<int>(resize->size.y);
+            Mandelbrot::set_boundary_to_resolution(boundary, height, width);
         }
     }
     return redraw;
@@ -44,12 +48,14 @@ bool event_handler(sf::Window &window, Mandelbrot::complexBoundary &boundary, in
 
 
 int main() {
-    constexpr int height = 800;
-    constexpr int width = 1500;
+    constexpr int height = 1000;
+    constexpr int width = 1000;
     constexpr unsigned int iterations_mandelbrot = 300;
     constexpr unsigned int iterations_julia = 300;
-    Mandelbrot::complexBoundary boundary_mandelbrot{.x_max = 0.85, .x_min = -2.0, .y_max = 1.00, .y_min = -1.00};
-    Mandelbrot::complexBoundary boundary_julia{.x_max = 0.85, .x_min = -2.0, .y_max = 1.00, .y_min = -1.00};
+    Mandelbrot::complexBoundary boundary_mandelbrot{.x_max = 2.0, .x_min = -2.0, .y_max = 1.00, .y_min = -1.00};
+    Mandelbrot::complexBoundary boundary_julia{.x_max = 2.0, .x_min = -2.0, .y_max = 1.00, .y_min = -1.00};
+    Mandelbrot::set_boundary_to_resolution(boundary_mandelbrot, height, width);
+    Mandelbrot::set_boundary_to_resolution(boundary_julia, height, width);
     // Mandelbrot::complexBoundary boundary {0.85, -2.0, 0.8, -0.8};
     sf::RenderWindow window_mandelbrot{sf::VideoMode{sf::Vector2u{width, height}}, "mandelbrot"};
     sf::RenderWindow window_julia{

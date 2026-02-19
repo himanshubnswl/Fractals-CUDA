@@ -2,9 +2,9 @@
 #include <iostream>
 
 namespace Mandelbrot {
-    void set_diff(complexBoundary& point) {
-        point.x_diff = point.x_max - point.x_min;
-        point.y_diff = point.y_max - point.y_min;
+    void complexBoundary::set_diff() {
+        x_diff = x_max - x_min;
+        y_diff = y_max - y_min;
     }
 
     complexPoint map_pxl_to_complex(sf::Vector2i pos, int height, int width, complexBoundary boundary) {
@@ -15,7 +15,7 @@ namespace Mandelbrot {
     }
 
     void set_complex_boundary_zoom(complexBoundary& boundary, complexPoint mouse_pos , double zoom) {
-        set_diff(boundary);
+        boundary.set_diff();
         boundary.x_max = mouse_pos.x + (boundary.x_max - mouse_pos.x) / zoom;
         boundary.x_min = mouse_pos.x + (boundary.x_min - mouse_pos.x) / zoom;
         boundary.y_max = mouse_pos.y + (boundary.y_max - mouse_pos.y) / zoom;
@@ -24,7 +24,7 @@ namespace Mandelbrot {
 
     sf::Vertex* render_mandelbrot(int height, int width, complexBoundary boundary, int iterations) {
         static sf::Vertex* vertex_arr_host = nullptr;
-        set_diff(boundary);
+        boundary.set_diff();
         if (vertex_arr_host == nullptr) {
             vertex_arr_host = static_cast<sf::Vertex*>(malloc(sizeof(sf::Vertex) * width * height));
         }
@@ -43,7 +43,7 @@ namespace Mandelbrot {
 
     sf::Vertex* render_julia(int height, int width, complexBoundary boundary, int max_iterations, complexPoint constant_p) {
         static sf::Vertex* vertex_arr_host = nullptr;
-        set_diff(boundary);
+        boundary.set_diff();
         if (vertex_arr_host == nullptr) {
             vertex_arr_host = static_cast<sf::Vertex*>(malloc(sizeof(sf::Vertex) * width * height));
         }
@@ -67,5 +67,16 @@ namespace Mandelbrot {
         boundary.x_min += delta.x;
         boundary.y_max += delta.y;
         boundary.y_min += delta.y;
+    }
+
+    __host__ void set_boundary_to_resolution(complexBoundary& boundary, int height, int width) {
+        double ratio {static_cast<double>(height)/static_cast<double>(width)};
+        boundary.set_diff();
+        double scaleY = (ratio * boundary.x_diff)/2;
+        double centreY = boundary.y_diff/2;
+        boundary.y_max = centreY + scaleY;
+        boundary.y_min = centreY - scaleY;
+
+        boundary.set_diff();
     }
 }
