@@ -48,20 +48,27 @@ bool event_handler(sf::Window &window, Mandelbrot::complexBoundary &boundary, in
 
 
 int main() {
-    constexpr int height = 1000;
-    constexpr int width = 1000;
+    int height{static_cast<int>(sf::VideoMode::getDesktopMode().size.y)};
+    int width{static_cast<int>(sf::VideoMode::getDesktopMode().size.x / 2)};
     constexpr unsigned int iterations_mandelbrot = 300;
     constexpr unsigned int iterations_julia = 300;
+
     Mandelbrot::complexBoundary boundary_mandelbrot{.x_max = 2.0, .x_min = -2.0, .y_max = 1.00, .y_min = -1.00};
     Mandelbrot::complexBoundary boundary_julia{.x_max = 2.0, .x_min = -2.0, .y_max = 1.00, .y_min = -1.00};
     Mandelbrot::set_boundary_to_resolution(boundary_mandelbrot, height, width);
     Mandelbrot::set_boundary_to_resolution(boundary_julia, height, width);
     // Mandelbrot::complexBoundary boundary {0.85, -2.0, 0.8, -0.8};
-    sf::RenderWindow window_mandelbrot{sf::VideoMode{sf::Vector2u{width, height}}, "mandelbrot"};
+
+    sf::RenderWindow window_mandelbrot{
+        sf::VideoMode{sf::Vector2u{static_cast<unsigned int>(width), static_cast<unsigned int>(height)}}, "mandelbrot"
+    };
     sf::RenderWindow window_julia{
-        sf::VideoMode{sf::Vector2u{width, height}},
+        sf::VideoMode{sf::Vector2u{static_cast<unsigned int>(width), static_cast<unsigned int>(height)}},
         "julia"
     };
+    window_mandelbrot.setPosition(sf::Vector2i{0, 0});
+    window_julia.setPosition(sf::Vector2i{width, 0});
+
     sf::Vertex *vertices_mandelbrot = Mandelbrot::render_mandelbrot(height, width, boundary_mandelbrot,
                                                                     iterations_mandelbrot);
     sf::Vertex *vertices_julia = Mandelbrot::render_julia(height, width, boundary_julia, iterations_julia,
