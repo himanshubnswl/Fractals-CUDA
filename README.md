@@ -19,4 +19,5 @@ and it should compile
 
 For Linux: idk i haven't compiled it on linux but CUDA works with gcc and clang so it should be easier than doing it on windows
 
-<img width="1920" height="1080" alt="25--16-04-52-898" src="https://github.com/user-attachments/assets/18118e34-2c31-4e85-8e20-558b388675ec" />
+
+<img width="1920" height="1080" alt="26--21-09-37-414" src="https://github.com/user-attachments/assets/d08bc870-4ef5-4df6-a866-ac1e11e6ae1c" />
